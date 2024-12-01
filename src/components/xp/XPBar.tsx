@@ -1,5 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; 
+import { Trophy } from 'lucide-react';
 
 interface XPBarProps {
   currentXP: number;
@@ -12,13 +13,16 @@ export function XPBar({ currentXP, maxXP, level }: XPBarProps) {
 
   return (
     <motion.div 
-      className="xp-bar relative w-full"
+      className="xp-bar relative w-full space-y-1"
       animate={{ scale: [1, 1.1, 1] }}
       transition={{ duration: 0.5, times: [0, 0.5, 1] }}
     >
       <div className="flex items-center justify-between mb-1">
-        <span className="text-sm text-gray-300">Level {level}</span>
-        <span className="text-sm text-gray-300">{currentXP}/{maxXP} XP</span>
+        <div className="flex items-center gap-1">
+          <Trophy className="w-4 h-4 text-yellow-400" />
+          <span className="text-sm text-gray-300 font-medium">Lvl {level}</span>
+        </div>
+        <span className="text-sm text-gray-300 font-medium">{currentXP}/{maxXP} XP</span>
       </div>
       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
         <motion.div

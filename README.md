@@ -1,15 +1,19 @@
 # HealthQuest - Gamified Fitness Journey
 
-HealthQuest is a gamified fitness tracking application that transforms your health journey into an engaging RPG-style adventure. Built with React, TypeScript, and Tailwind CSS, it offers an immersive experience where users can create characters, complete missions, join guilds, and track their fitness progress.
+HealthQuest transforms your health journey into an engaging RPG-style adventure. Built with React, TypeScript, and Tailwind CSS, it offers an immersive experience where users can create characters, complete missions, join guilds, and track their fitness progress.
+
+## Live Demo
+[View Live Demo](https://famous-blini-a64dd3.netlify.app)
 
 ## Features
 
-### Character Creation
+### Character System
 - Customizable pixel art avatars
 - Character name selection
 - Activity level settings (Beginner, Intermediate, Advanced)
 - Multiple fitness goals selection
-- Personalized fitness journey setup
+- XP and leveling system
+- Virtual currency (coins)
 
 ### Missions System
 - **Physical Activity**
@@ -31,7 +35,7 @@ HealthQuest is a gamified fitness tracking application that transforms your heal
 - Join existing guilds or create new ones
 - Collaborative guild missions
 - Weekly guild goals
-- Guild chat for member communication
+- Real-time guild chat
 - Guild achievements and rankings
 - Member management system
 - Guild ownership transfer
@@ -42,67 +46,59 @@ HealthQuest is a gamified fitness tracking application that transforms your heal
 - Achievement system
 - Personal goals tracking
 - Activity streaks
+- Inventory system with equippable items
 
-## Technical Architecture
+## Technical Stack
 
-### Core Technologies
+### Frontend (Current)
 - React 18.3
 - TypeScript
 - Tailwind CSS
 - Framer Motion
 - Lucide Icons
+- DiceBear for avatars
 
-### Key Components
+### Backend (Planned)
+See [Tech Stack Documentation](docs/tech-stack.md) for detailed backend architecture plans.
 
-#### Character System
+## Key Components
+
+### Character System
 - `CharacterSelection.tsx`: Multi-step character creation
 - `PixelAvatarGenerator.tsx`: Custom avatar creation
 - `CharacterContext.tsx`: Global character state management
 
-#### Mission System
+### Mission System
 - `MissionCard.tsx`: Mission display and interaction
 - `MissionTimer.tsx`: Timer-based mission tracking
-- `GenerateMissionButton.tsx`: AI-powered mission generation
+- `GenerateMissionButton.tsx`: Mission generation
 
-#### Guild System
+### Guild System
 - `GuildChat.tsx`: Real-time guild communication
 - `GuildWeeklyGoal.tsx`: Collaborative goals tracking
 - `ManageMembersModal.tsx`: Guild member management
 
-#### Layout
+### Layout
 - `GameLayout.tsx`: Main application layout
 - `Navigation.tsx`: Game navigation system
 - `Header.tsx`: Application header
 
-### State Management
+## State Management
 - React Context for global state
 - Local state for component-specific data
 - Persistent storage for user progress
 
-## User Experience
-
-### Character Progression
-1. Create personalized character
-2. Select fitness goals and activity level
-3. Complete missions to gain XP
-4. Level up and unlock achievements
-
-### Social Features
-1. Join a guild
-2. Participate in guild missions
-3. Communicate with guild members
-4. Contribute to guild goals
-
-### Mission System
-1. View available missions by category
-2. Track progress in real-time
-3. Complete missions for XP rewards
-4. Generate new missions based on profile
-
 ## Development
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
 
 ### Setup
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/healthquest.git
+
 # Install dependencies
 npm install
 
@@ -131,10 +127,21 @@ src/
 
 ## Future Enhancements
 
+### Short Term
 - Integration with fitness tracking devices
 - Advanced mission generation system
 - Enhanced guild features
 - Social challenges and events
-- Achievements marketplace
-- Custom mission creation tools
+
+### Long Term
 - Mobile app version
+- AI-powered workout recommendations
+- Virtual trainer integration
+- Cross-platform sync
+- Achievements marketplace
+
+## Contributing
+Contributions are welcome! Please read our contributing guidelines for details on our code of conduct and the process for submitting pull requests.
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.

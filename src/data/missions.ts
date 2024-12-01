@@ -23,6 +23,69 @@ export const GUILD_MISSIONS = [
   }
 ];
 
+export const GUILD_MISSION_TEMPLATES = [
+  {
+    title: 'Morning Guild Training',
+    description: 'Start your day with a group workout',
+    target: 15,
+    unit: 'minutes',
+    type: 'guild',
+    xp: 200,
+    coins: 100,
+    trackingType: 'timer'
+  },
+  {
+    title: 'Afternoon Power Hour',
+    description: 'Join the afternoon group training session',
+    target: 20,
+    unit: 'minutes',
+    type: 'guild',
+    xp: 250,
+    coins: 125,
+    trackingType: 'timer'
+  },
+  {
+    title: 'Evening Workout',
+    description: 'End your day with a group exercise session',
+    target: 30,
+    unit: 'minutes',
+    type: 'guild',
+    xp: 300,
+    coins: 150,
+    trackingType: 'timer'
+  },
+  {
+    title: 'Team Challenge',
+    description: 'Complete a challenging group workout',
+    target: 25,
+    unit: 'minutes',
+    type: 'guild',
+    xp: 275,
+    coins: 140,
+    trackingType: 'timer'
+  },
+  {
+    title: 'Guild Endurance Run',
+    description: 'Participate in a group cardio session',
+    target: 35,
+    unit: 'minutes',
+    type: 'guild',
+    xp: 350,
+    coins: 175,
+    trackingType: 'timer'
+  },
+  {
+    title: 'Weekend Warriors',
+    description: 'Join the weekend group training',
+    target: 40,
+    unit: 'minutes',
+    type: 'guild',
+    xp: 400,
+    coins: 200,
+    trackingType: 'timer'
+  }
+];
+
 export const MISSION_TEMPLATES = {
   physical: [
     {

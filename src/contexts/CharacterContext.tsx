@@ -24,8 +24,13 @@ export function CharacterProvider({ children }: { children: React.ReactNode }) {
     streak: 5 // Initial streak value
   });
 
-  const updateDailyStats = (stats: Partial<CharacterContextType['dailyStats']>) => {
-    setDailyStats(prev => ({ ...prev, ...stats }));
+  const updateDailyStats = (newStats: Partial<CharacterContextType['dailyStats']>) => {
+    setDailyStats(prev => ({
+      ...prev,
+      xp: prev.xp + (newStats.xp || 0),
+      steps: prev.steps + (newStats.steps || 0),
+      activeMinutes: prev.activeMinutes + (newStats.activeMinutes || 0)
+    }));
   };
 
   return (

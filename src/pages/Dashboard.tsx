@@ -52,14 +52,14 @@ export function Dashboard({ missions }: DashboardProps) {
     <div className="space-y-6">
       <motion.div 
         className="grid grid-cols-2 md:grid-cols-4 gap-4"
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 1, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
       >
         {DAILY_STATS.map((stat, index) => (
           <motion.div
             key={stat.label}
             className="bg-white/10 backdrop-blur-lg rounded-lg p-4"
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 1, x: 0 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
           >
@@ -76,7 +76,7 @@ export function Dashboard({ missions }: DashboardProps) {
         <div className="lg:col-span-8 space-y-6">
           <motion.div 
             className="bg-white/10 backdrop-blur-lg rounded-lg p-6"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 1, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="space-y-6">
@@ -121,7 +121,7 @@ export function Dashboard({ missions }: DashboardProps) {
 
           <motion.div 
             className="bg-white/10 backdrop-blur-lg rounded-lg p-6"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 1, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
@@ -132,7 +132,7 @@ export function Dashboard({ missions }: DashboardProps) {
         <div className="lg:col-span-4 space-y-6">
           <motion.div 
             className="bg-white/10 backdrop-blur-lg rounded-lg p-6"
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 1, x: 0 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
           >

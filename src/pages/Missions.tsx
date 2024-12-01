@@ -4,7 +4,7 @@ import { GenerateMissionButton } from '../components/missions/GenerateMissionBut
 import { Users, User, Activity, Moon, Target, Brain } from 'lucide-react';
 import { useCharacter } from '../contexts/CharacterContext';
 import { motion } from 'framer-motion';
-import { MISSION_TEMPLATES } from '../data/missions';
+import { MISSION_TEMPLATES, GUILD_MISSION_TEMPLATES } from '../data/missions';
 
 const MAX_MISSIONS_PER_CATEGORY = 4;
 
@@ -104,7 +104,9 @@ export function Missions() {
   const [isGenerating, setIsGenerating] = useState<Record<string, boolean>>({
     physical: false,
     mind: false,
-    sleep: false
+    sleep: false,
+    guild: false,
+    regenerating: false
   });
   const [regeneratingMissions, setRegeneratingMissions] = useState<Record<string, boolean>>({});
   const [completedMissions, setCompletedMissions] = useState<string[]>([]);
@@ -179,16 +181,22 @@ export function Missions() {
     // Update character XP when mission is completed
     if (isCompleting) {
       // Update daily stats
-      updateDailyStats({
-        xp: prev => prev + totalXP,
-        steps: prev => prev + (mission.unit === 'steps' ? mission.target : 0),
-        activeMinutes: prev => prev + (mission.unit === 'minutes' ? mission.target : 0)
-      });
+      updateDailyStats(prev => ({
+        ...prev,
+        steps: prev.steps + (mission.unit === 'steps' ? mission.target : 0),
+        activeMinutes: prev.activeMinutes + (mission.unit === 'minutes' ? mission.target : 0)
+      }));
       
       setCharacter(prev => ({
         ...prev,
         xp: prev.xp + totalXP,
         coins: prev.coins + (coinsReward || 0)
+      }));
+
+      // Update daily XP separately to avoid double counting
+      updateDailyStats(prev => ({
+        ...prev,
+        xp: prev.xp + totalXP
       }));
       
       setCompletedMissions(prev => [...prev, mission.title]);
@@ -204,43 +212,52 @@ export function Missions() {
   };
 
   const handleRegenerateMission = (mission: any, reason: string) => {
+    if (isGenerating.regenerating) return;
+    
+    setIsGenerating(prev => ({ ...prev, regenerating: true }));
     setRegeneratingMissions(prev => ({ ...prev, [mission.title]: true }));
     
-    // Get available mission templates for the category
-    const templates = MISSION_TEMPLATES[mission.category];
-    
-    // Get current missions in this category
-    const currentMissions = missions.personal.filter(m => m.category === mission.category);
-    const currentTitles = new Set(currentMissions.map(m => m.title));
-    
-    // Filter out templates that are already active
-    const availableTemplates = templates.filter(t => !currentTitles.has(t.title));
-    
-    if (availableTemplates.length === 0) {
-      // No unique missions available, keep the current mission
-      setRegeneratingMissions(prev => ({ ...prev, [mission.title]: false }));
-      return;
-    }
-    
+    // Simulate API call delay
     setTimeout(() => {
-      // Randomly select a template from available ones
-      const template = availableTemplates[Math.floor(Math.random() * availableTemplates.length)];
+      let newMission;
       
-      const newMission = {
-        ...template,
-        progress: 0,
-        type: 'personal',
-        category: mission.category,
-      };
+      if (mission.type === 'guild') {
+        // For guild missions, select a random template
+        const template = GUILD_MISSION_TEMPLATES[
+          Math.floor(Math.random() * GUILD_MISSION_TEMPLATES.length)
+        ];
+        newMission = { ...template, progress: 0, id: Date.now().toString() };
+      } else {
+        // For personal missions, use the existing template logic
+        const templates = MISSION_TEMPLATES[mission.category];
+        const currentMissions = missions.personal.filter(m => m.category === mission.category);
+        const currentTitles = new Set(currentMissions.map(m => m.title));
+        const availableTemplates = templates.filter(t => !currentTitles.has(t.title));
+        
+        if (availableTemplates.length === 0) {
+          setRegeneratingMissions(prev => ({ ...prev, [mission.title]: false }));
+          setIsGenerating(prev => ({ ...prev, regenerating: false }));
+          return;
+        }
+        
+        const template = availableTemplates[Math.floor(Math.random() * availableTemplates.length)];
+        newMission = {
+          ...template,
+          progress: 0,
+          type: 'personal',
+          category: mission.category,
+        };
+      }
       
       setMissions(prev => ({
         ...prev,
-        [mission.type]: prev[mission.type].map(m =>
+        [mission.type]: prev[mission.type].map(m => 
           m.title === mission.title ? newMission : m
         )
       }));
       
       setRegeneratingMissions(prev => ({ ...prev, [mission.title]: false }));
+      setIsGenerating(prev => ({ ...prev, regenerating: false }));
     }, 2000);
   };
 
@@ -286,9 +303,47 @@ export function Missions() {
                 key={index}
                 {...mission}
                 onQuickAction={() => handleQuickAction(mission)}
-                onRegenerate={(reason) => handleRegenerateMission(mission, reason)}
+                onRegenerate={isGenerating.regenerating ? undefined : (reason) => handleRegenerateMission(mission, reason)}
+                isRegenerating={regeneratingMissions[mission.title]}
               />
             ))}
+            {missions.guild.length < MAX_MISSIONS_PER_CATEGORY && (
+              <GenerateMissionButton
+                category="guild"
+                character={character}
+                onGenerate={async () => {
+                  setIsGenerating(prev => ({ ...prev, guild: true }));
+                  
+                  // Simulate API delay
+                  await new Promise(resolve => setTimeout(resolve, 2000));
+                  
+                  // Get current guild mission titles
+                  const currentTitles = new Set(missions.guild.map(m => m.title));
+                  
+                  // Filter out templates that are already active
+                  const availableTemplates = GUILD_MISSION_TEMPLATES.filter(
+                    t => !currentTitles.has(t.title)
+                  );
+                  
+                  if (availableTemplates.length === 0) {
+                    setIsGenerating(prev => ({ ...prev, guild: false }));
+                    return;
+                  }
+                  
+                  const template = GUILD_MISSION_TEMPLATES[
+                    Math.floor(Math.random() * availableTemplates.length)
+                  ];
+                  const newMission = { ...template, progress: 0, id: Date.now().toString() };
+                  setMissions(prev => ({
+                    ...prev,
+                    guild: [...prev.guild, newMission]
+                  }));
+                  
+                  setIsGenerating(prev => ({ ...prev, guild: false }));
+                }}
+                isLoading={isGenerating['guild']}
+              />
+            )}
           </div>
         </div>
       )}
@@ -311,7 +366,7 @@ export function Missions() {
                   key={index}
                   {...mission}
                   onQuickAction={() => handleQuickAction(mission)}
-                  onRegenerate={(reason) => handleRegenerateMission(mission, reason)}
+                  onRegenerate={isGenerating.regenerating ? undefined : (reason) => handleRegenerateMission(mission, reason)}
                   isRegenerating={regeneratingMissions[mission.title]}
                 />
               ))}
@@ -337,7 +392,7 @@ export function Missions() {
                   key={index}
                   {...mission}
                   onQuickAction={() => handleQuickAction(mission)}
-                  onRegenerate={(reason) => handleRegenerateMission(mission, reason)}
+                  onRegenerate={isGenerating.regenerating ? undefined : (reason) => handleRegenerateMission(mission, reason)}
                   isRegenerating={regeneratingMissions[mission.title]}
                 />
               ))}
@@ -363,7 +418,7 @@ export function Missions() {
                   key={index}
                   {...mission}
                   onQuickAction={() => handleQuickAction(mission)}
-                  onRegenerate={(reason) => handleRegenerateMission(mission, reason)}
+                  onRegenerate={isGenerating.regenerating ? undefined : (reason) => handleRegenerateMission(mission, reason)}
                   isRegenerating={regeneratingMissions[mission.title]}
                 />
               ))}

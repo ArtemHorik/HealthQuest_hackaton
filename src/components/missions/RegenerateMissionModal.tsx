@@ -29,19 +29,20 @@ export function RegenerateMissionModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const reason = selectedReason === 'Other' ? otherReason : selectedReason;
+    setSelectedReason('');
+    setOtherReason('');
     onConfirm(reason);
-    onClose();
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/60"
+            className="fixed inset-0 bg-black/60"
             onClick={onClose}
           />
           
@@ -49,7 +50,7 @@ export function RegenerateMissionModal({
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            className="relative bg-green-900/90 backdrop-blur-xl rounded-lg shadow-xl w-full max-w-md p-6 border border-green-700"
+            className="relative bg-green-900/90 backdrop-blur-xl rounded-lg shadow-xl w-full max-w-md p-6 border border-green-700 z-[10000]"
           >
             <button
               onClick={onClose}

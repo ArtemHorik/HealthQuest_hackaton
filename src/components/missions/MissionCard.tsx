@@ -42,8 +42,8 @@ export function MissionCard({
   const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
 
   const handleRegenerate = (reason: string) => {
-    onRegenerate?.(reason);
     setIsRegenerateModalOpen(false);
+    onRegenerate?.(reason);
   };
   
   const handleQuickAction = async (e: React.MouseEvent) => {
@@ -66,24 +66,28 @@ export function MissionCard({
   
   return (
     <motion.div
-      layout
       className="w-full text-left rounded-lg overflow-hidden"
     >
       <AnimatePresence mode="wait">
         {!isCompleted ? (
           <motion.div
             key="mission"
-            initial={false}
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ 
+              duration: 0.4,
+              ease: [0.4, 0, 0.2, 1]
+            }}
             exit={{ 
               opacity: 0,
               scale: 0.8,
-              transition: { duration: 0.3 }
+              transition: { duration: 0.3, ease: "easeIn" }
             }}
             className={`transition-all p-4 ${
               coins ? 'bg-gradient-to-r from-yellow-900/20 to-yellow-500/10 hover:from-yellow-900/30 hover:to-yellow-500/20 ring-2 ring-yellow-500/30' : 'bg-white/5 hover:bg-white/10'
             }`}
           >
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between min-h-[76px]">
               <div>
                 <h3 className="text-lg font-semibold text-white">{title}</h3>
                 <p className="text-white/90 text-sm flex items-center gap-2 font-medium">
@@ -108,18 +112,24 @@ export function MissionCard({
               </div>
               <div className="flex items-center gap-2">
                 {onRegenerate && !isRegenerating && (
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setIsRegenerateModalOpen(true)}
-                    className="p-1 text-gray-400 hover:text-white transition-colors"
-                    disabled={isRegenerating}
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                  </motion.button>
+                  <motion.div className="w-6 h-6 flex items-center justify-center">
+                    <motion.button
+                      onClick={() => setIsRegenerateModalOpen(true)}
+                      className={`p-1 transition-colors ${
+                        isRegenerating 
+                          ? 'opacity-0 cursor-not-allowed' 
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                      disabled={isRegenerating}
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </motion.button>
+                  </motion.div>
                 )}
                 {isRegenerating && (
-                  <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />
+                  <div className="w-6 h-6 flex items-center justify-center">
+                    <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />
+                  </div>
                 )}
                 {type === 'guild' ? (
                   <Users className="w-5 h-5 text-indigo-400" />
@@ -230,7 +240,7 @@ export function MissionCard({
                 <div className="flex items-center justify-center gap-2">
                   <div className="text-2xl font-bold text-white">+{xp} XP</div>
                   {coins && (
-                    <div className="flex items-center gap-1 text-yellow-400 text-xl font-bold animate-bounce">
+                    <div className="flex items-center gap-1 text-yellow-400 text-xl font-bold animate-bounce ml-2">
                       <img src="https://i.ibb.co/02FV8sY/coin.png" alt="Coin" className="w-5 h-5" />
                       <span>+{coins}</span>
                     </div>
@@ -242,12 +252,14 @@ export function MissionCard({
           </motion.div>
         )}
       </AnimatePresence>
-      <RegenerateMissionModal
-        isOpen={isRegenerateModalOpen}
-        onClose={() => setIsRegenerateModalOpen(false)}
-        onConfirm={handleRegenerate}
-        missionTitle={title}
-      />
+      {isRegenerateModalOpen && (
+        <RegenerateMissionModal
+          isOpen={true}
+          onClose={() => setIsRegenerateModalOpen(false)}
+          onConfirm={handleRegenerate}
+          missionTitle={title}
+        />
+      )}
     </motion.div>
   );
 }
